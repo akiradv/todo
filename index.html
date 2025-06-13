@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Lista de Tarefas</h1>
+                <button id="theme-toggle" aria-label="Alternar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div class="todo-app">
+            <div class="filters">
+                <div class="filter active" data-filter="all">Todas</div>
+                <div class="filter" data-filter="active">Ativas</div>
+                <div class="filter" data-filter="completed">Concluídas</div>
+            </div>
+            
+            <div class="input-section">
+                <input type="text" id="task-input" placeholder="Adicionar nova tarefa...">
+                <button id="add-button"><i class="fas fa-plus"></i></button>
+            </div>
+            
+            <ul id="task-list">
+                <!-- Tarefas serão adicionadas aqui dinamicamente -->
+            </ul>
+            
+            <div class="todo-footer">
+                <span id="tasks-counter">0 tarefas restantes</span>
+                <button id="clear-completed">Limpar Concluídas</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
