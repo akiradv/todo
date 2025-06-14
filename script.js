@@ -11,9 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
         themeIcon.classList.add('fa-sun');
     }
     
-    // Alternar entre temas claro e escuro
+    // Atualizar a cor do tema para o navegador
+    function updateThemeColor() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const themeColor = isDark ? '#121212' : '#ffffff';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+    }
+    
+    updateThemeColor();
+    
+    // Alternar entre temas claro e escuro com animação
     themeToggle.addEventListener('click', function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
+        
+        // Adicionar classe para animação de transição
+        document.body.classList.add('theme-transition');
         
         if (currentTheme === 'dark') {
             document.documentElement.removeAttribute('data-theme');
@@ -26,6 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
         }
+        
+        // Atualizar a cor do tema para o navegador
+        updateThemeColor();
+        
+        // Remover classe de animação após a transição
+        setTimeout(() => {
+            document.body.classList.remove('theme-transition');
+        }, 500);
     });
     
     // Elementos DOM
@@ -324,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const taskItem = document.createElement('li');
             taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
             taskItem.dataset.id = task.id;
+            taskItem.draggable = true; // Habilitar drag and drop
             
             // Adicionar dica visual para deslize em dispositivos móveis
             const swipeHint = isMobile ? '<div class="swipe-hint">Deslize para ações</div>' : '';
@@ -335,8 +356,103 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${swipeHint}
             `;
             
+            // Adicionar feedback visual ao clicar
+            taskItem.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('task-checkbox') && 
+                    !e.target.classList.contains('delete-btn') && 
+                    !e.target.closest('.delete-btn')) {
+                    this.classList.add('task-clicked');
+                    setTimeout(() => {
+                        this.classList.remove('task-clicked');
+                    }, 300);
+                }
+            });
+            
             taskList.appendChild(taskItem);
         });
+        
+        // Configurar drag and drop para reordenar tarefas
+        setupDragAndDrop();
+    }
+    
+    // Configurar drag and drop
+    function setupDragAndDrop() {
+        const taskItems = document.querySelectorAll('.task-item');
+        
+        taskItems.forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('dragenter', handleDragEnter);
+            item.addEventListener('dragleave', handleDragLeave);
+            item.addEventListener('drop', handleDrop);
+            item.addEventListener('dragend', handleDragEnd);
+        });
+    }
+    
+    let draggedItem = null;
+    
+    function handleDragStart(e) {
+        draggedItem = this;
+        this.classList.add('dragging');
+        
+        // Necessário para o Firefox
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+    
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+    
+    function handleDragEnter(e) {
+        this.classList.add('drag-over');
+    }
+    
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+    
+    function handleDrop(e) {
+        e.stopPropagation();
+        
+        if (draggedItem !== this) {
+            // Reordenar no DOM
+            const allItems = Array.from(taskList.querySelectorAll('.task-item'));
+            const draggedIndex = allItems.indexOf(draggedItem);
+            const targetIndex = allItems.indexOf(this);
+            
+            if (draggedIndex < targetIndex) {
+                taskList.insertBefore(draggedItem, this.nextSibling);
+            } else {
+                taskList.insertBefore(draggedItem, this);
+            }
+            
+            // Reordenar no array de tarefas
+            const draggedTaskId = parseInt(draggedItem.dataset.id);
+            const targetTaskId = parseInt(this.dataset.id);
+            
+            const draggedTaskIndex = tasks.findIndex(task => task.id === draggedTaskId);
+            const targetTaskIndex = tasks.findIndex(task => task.id === targetTaskId);
+            
+            const [movedTask] = tasks.splice(draggedTaskIndex, 1);
+            tasks.splice(targetTaskIndex, 0, movedTask);
+            
+            saveTasksToLocalStorage();
+        }
+        
+        return false;
+    }
+    
+    function handleDragEnd(e) {
+        // Limpar classes
+        const taskItems = document.querySelectorAll('.task-item');
+        taskItems.forEach(item => {
+            item.classList.remove('dragging', 'drag-over');
+        });
+        
+        draggedItem = null;
     }
     
     function filterTasks() {

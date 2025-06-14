@@ -3,34 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#764ba2">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Um aplicativo simples para gerenciar suas tarefas diárias">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tarefas">
+    <meta name="application-name" content="Lista de Tarefas">
+    
+    <!-- Ícones para iOS -->
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-152x152.png">
+    
+    <!-- Ícone para a tela inicial -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-72x72.png">
+    
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json">
+    
     <title>Lista de Tarefas</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Lista de Tarefas</h1>
-                <button id="theme-toggle" aria-label="Alternar tema">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </header>
-        
         <div class="todo-app">
+            <header>
+                <div class="header-content">
+                    <h1>Lista de Tarefas</h1>
+                    <button id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+            
             <div class="filters">
-                <div class="filter active" data-filter="all">Todas</div>
-                <div class="filter" data-filter="active">Ativas</div>
-                <div class="filter" data-filter="completed">Concluídas</div>
+                <button class="filter active" data-filter="all">Todas</button>
+                <button class="filter" data-filter="active">Ativas</button>
+                <button class="filter" data-filter="completed">Concluídas</button>
             </div>
             
             <div class="input-section">
                 <input type="text" id="task-input" placeholder="Adicionar nova tarefa...">
-                <button id="add-button"><i class="fas fa-plus"></i></button>
+                <button id="add-button">+</button>
             </div>
             
             <ul id="task-list">
@@ -44,6 +61,69 @@
         </div>
     </div>
     
+    <!-- Banner de instalação do PWA -->
+    <div class="install-banner" id="install-banner">
+        <div class="install-content">
+            <p>Instale este aplicativo na sua área de trabalho para acesso rápido!</p>
+            <div class="install-buttons">
+                <button id="install-button">Instalar</button>
+                <button id="close-install-banner">Agora não</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
+    
+    <!-- Registro do Service Worker para PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+        
+        // Lógica para o banner de instalação
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        const installButton = document.getElementById('install-button');
+        const closeInstallBanner = document.getElementById('close-install-banner');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previne o comportamento padrão do Chrome
+            e.preventDefault();
+            // Armazena o evento para uso posterior
+            deferredPrompt = e;
+            // Mostra o banner de instalação
+            installBanner.classList.add('show');
+        });
+        
+        installButton.addEventListener('click', () => {
+            // Esconde o banner
+            installBanner.classList.remove('show');
+            // Mostra o prompt de instalação
+            deferredPrompt.prompt();
+            // Espera pela resposta do usuário
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Usuário aceitou a instalação');
+                } else {
+                    console.log('Usuário recusou a instalação');
+                }
+                // Limpa a referência
+                deferredPrompt = null;
+            });
+        });
+        
+        closeInstallBanner.addEventListener('click', () => {
+            // Esconde o banner
+            installBanner.classList.remove('show');
+        });
+    </script>
 </body>
 </html>

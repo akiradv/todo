@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Fundo do ícone -->
+  <rect width="512" height="512" rx="100" fill="#000000" />
+  
+  <!-- Círculo de fundo para a lista -->
+  <circle cx="256" cy="256" r="180" fill="#ffffff" />
+  
+  <!-- Lista de tarefas -->
+  <g fill="#000000" transform="translate(150, 150)">
+    <!-- Item 1 -->
+    <rect x="0" y="0" width="30" height="30" rx="15" />
+    <rect x="45" y="10" width="170" height="10" rx="5" />
+    
+    <!-- Item 2 -->
+    <rect x="0" y="60" width="30" height="30" rx="15" />
+    <rect x="45" y="70" width="140" height="10" rx="5" />
+    
+    <!-- Item 3 -->
+    <rect x="0" y="120" width="30" height="30" rx="15" />
+    <rect x="45" y="130" width="160" height="10" rx="5" />
+    
+    <!-- Marca de verificação no segundo item -->
+    <path d="M8,75 L15,82 L25,65" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
