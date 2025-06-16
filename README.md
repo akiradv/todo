@@ -1,6 +1,6 @@
-# 📝 Lista de Tarefas — Aplicativo Web
+# 📝 Lista de Tarefas 
 
-A **Lista de Tarefas** é um aplicativo web leve, rápido e intuitivo desenvolvido para ajudar você a organizar melhor o seu dia. Totalmente responsivo e com suporte a PWA (Progressive Web App), ele funciona tanto online quanto offline e pode ser instalado como um aplicativo em seu dispositivo.
+O **Lista de Tarefas** é um aplicativo web leve, rápido e intuitivo desenvolvido para ajudar você a organizar melhor o seu dia. Totalmente responsivo e com suporte a PWA (Progressive Web App), ele funciona tanto online quanto offline e pode ser instalado como um aplicativo em seu dispositivo.
 
 Com um design moderno, animações suaves e recursos inteligentes, o app oferece uma experiência de uso prática, acessível e agradável — ideal para quem busca produtividade sem complicações.
 
